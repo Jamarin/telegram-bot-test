@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "serve": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/Jamarin/telegram-bot-test/issues"
   },
-  "homepage": "https://github.com/Jamarin/telegram-bot-test#readme"
+  "homepage": "https://github.com/Jamarin/telegram-bot-test#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "telegraf": "^4.4.2"
+  }
 }
