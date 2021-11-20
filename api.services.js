@@ -55,8 +55,15 @@ const createGame = async (game) => {
 }
 
 const cancelGame = async (gameId, authorId) => {
-    const response = await instance.put(`/game/${gameId}/author/${authorId}`)
-    return response.data
+    const response = await instance.put(`/game/cancel/${gameId}/author/${authorId}`)
+    let playersInGame = []
+    if(response.data !== null) {
+        playersInGame = await getPlayerListInGame(gameId)
+    }
+    return {
+        gameCanceled: response.data !== null,
+        playersList: playersInGame
+    }
 }
 
 module.exports = {

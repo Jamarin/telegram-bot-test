@@ -7,7 +7,6 @@ const commandMe = require('./commands/me')
 const commandHelp = require('./commands/help')
 const commandName = require('./commands/name')
 const createGameWizard = require('./commands/wizard-create')
-const Calendar = require("telegraf-calendar-telegram");
 
 // Prepare stage
 const stage = new Scenes.Stage([createGameWizard()], {
@@ -39,20 +38,6 @@ bot.command('games', ctx => {
 
 bot.command('me', ctx => {
     commandMe(ctx)
-})
-
-bot.command('calendar', ctx => {
-    const calendar = new Calendar(bot, {
-        startWeekDay: 1,
-        weekDayNames: ["L", "M", "M", "G", "V", "S", "D"],
-        monthNames: [
-            "Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
-            "Lug", "Ago", "Set", "Ott", "Nov", "Dic"
-        ]
-    });
-
-    calendar.setDateListener((context, date) => context.reply(date));
-    ctx.reply('Qué fecha es?', calendar.getCalendar())
 })
 
 bot.command('create', ctx => {

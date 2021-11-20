@@ -10,6 +10,32 @@ const createGameWizard = () => {
         maxPlayers: 0
     }
 
+    const validateTitle = (title) => {
+        return title.length > 3 && title.length < 255
+    }
+    const receiveGameTitle = (ctx, title) => {
+        if(validateTitle(title)) {
+            game.title = title
+            return true
+        } else {
+            ctx.reply('El título no es válido. Por favor, vuelve a introducirlo. (3 < nombre < 255)')
+            return false
+        }
+    }
+
+    const validateDescription = (description) => {
+        return description.length > 3 && description.length < 255
+    }
+    const receiveGameDescription = (ctx, description) => {
+        if(validateDescription(description)) {
+            game.description = description
+            return true
+        } else {
+            ctx.reply('La descripción no es válida. Por favor, vuelve a introducirla. (3 < descripción < 255)')
+            return false
+        }
+    }
+
     return new Scenes.WizardScene(
         'super-wizard',
         async (ctx) => {
@@ -17,22 +43,24 @@ const createGameWizard = () => {
             return ctx.wizard.next()
         },
         async (ctx) => {
-            game.title = ctx.message.text
-            await ctx.reply('¿Cuál es la descripción de la partida?')
-            return ctx.wizard.next()
+            if(receiveGameTitle(ctx, ctx.message.text)) {
+                await ctx.reply('¿Cuál es la descripción de la partida?')
+                return ctx.wizard.next()
+            }
         },
         async (ctx) => {
-            game.description = ctx.message.text
-            await ctx.reply('¿Qué tipo de partida es?',
-                Markup.inlineKeyboard([[{
+            if(receiveGameDescription(ctx, ctx.message.text)) {
+                await ctx.reply('¿Qué tipo de partida es?',
+                    Markup.inlineKeyboard([[{
                         text: `Rol`,
                         callback_data: `role`
                     }], [{
                         text: `Mesa`,
                         callback_data: `board`
                     }]])
-            )
-            return ctx.wizard.next()
+                )
+                return ctx.wizard.next()
+            }
         },
         async (ctx) => {
             game.type = ctx.callbackQuery.data

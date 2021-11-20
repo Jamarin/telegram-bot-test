@@ -48,8 +48,18 @@ const prepareGameActionsButtonsForPlayer = async (playerData, game) => {
                   text: 'Cancelar',
                   callback_data: `game-cancel-${game.id}`
                 })
-                bot.action(`game-cancel-${game.id}`, ctx => {
-                    cancelGame(game.id, ctx.from.id)
+                bot.action(`game-cancel-${game.id}`, async ctx => {
+                    const response = await cancelGame(game.id, ctx.from.id)
+                    console.log(response)
+                    if(response.gameCanceled) {
+                        if(response.playersList.length > 0) {
+                            response.playersList.forEach(player => {
+                                console.log(`Send message to user with id ${player.id}`)
+                                bot.telegram.sendMessage(player.id, `La partida ${game.title} ha sido cancelada.`)
+                            })
+                        }
+                        ctx.answerCbQuery()
+                    }
                     ctx.reply(`La partida ${game.title} ha sido cancelada. Se avisará a los usuarios que estuvieran apuntados. (WIP)`)
                     ctx.answerCbQuery()
                 })
