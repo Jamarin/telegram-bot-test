@@ -13,13 +13,7 @@ const createGameWizard = () => {
     return new Scenes.WizardScene(
         'super-wizard',
         async (ctx) => {
-            await ctx.reply(
-                '¿Cuál es el nombre de la partida?',
-                // Markup.inlineKeyboard([
-                //     Markup.button.url('❤️', 'http://telegraf.js.org'),
-                //     Markup.button.callback('➡️ Next', 'next'),
-                // ])
-            )
+            await ctx.reply('¿Cuál es el nombre de la partida?')
             return ctx.wizard.next()
         },
         async (ctx) => {

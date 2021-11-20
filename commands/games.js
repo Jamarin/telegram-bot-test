@@ -1,4 +1,4 @@
-const {getGames, getPlayerListInGame, getPlayerInGame, removePlayerFromGame, addPlayerToGame} = require("../api.services");
+const {getGames, getPlayerListInGame, getPlayerInGame, removePlayerFromGame, addPlayerToGame, cancelGame} = require("../api.services");
 const bot = require('../bot')
 
 let gamesList = []
@@ -43,15 +43,27 @@ const prepareGameActionsButtonsForPlayer = async (playerData, game) => {
             })
         }
         else {
-            gameActionsButtons.push({
-                text: 'Unirse',
-                callback_data: `game-in-${game.id}`
-            })
-            bot.action(`game-in-${game.id}`, ctx => {
-                addPlayerToGame(game.id, ctx.from)
-                bot.telegram.sendMessage(ctx.chat.id, `Te has unido a la partida ${game.title}`)
-                ctx.answerCbQuery()
-            })
+            if(playerData.id === game.authorId) {
+                gameActionsButtons.push({
+                  text: 'Cancelar',
+                  callback_data: `game-cancel-${game.id}`
+                })
+                bot.action(`game-cancel-${game.id}`, ctx => {
+                    cancelGame(game.id, ctx.from.id)
+                    ctx.reply(`La partida ${game.title} ha sido cancelada. Se avisará a los usuarios que estuvieran apuntados. (WIP)`)
+                    ctx.answerCbQuery()
+                })
+            } else {
+                gameActionsButtons.push({
+                    text: 'Unirse',
+                    callback_data: `game-in-${game.id}`
+                })
+                bot.action(`game-in-${game.id}`, ctx => {
+                    addPlayerToGame(game.id, ctx.from)
+                    bot.telegram.sendMessage(ctx.chat.id, `Te has unido a la partida ${game.title}`)
+                    ctx.answerCbQuery()
+                })
+            }
         }
     } else {
         gameActionsButtons.push({

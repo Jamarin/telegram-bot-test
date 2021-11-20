@@ -26,6 +26,14 @@ const initializePlayer = async (playerData, playerName) => {
     return player.data
 }
 
+const changePlayerName = async (playerId, playerName) => {
+    const player = await instance.put(`/player/change-name/`, {
+        playerId: playerId,
+        playerName: playerName
+    })
+    return player.data
+}
+
 const addPlayerToGame = async (gameId, playerData) => {
   let addToGame = await instance.post(`/game/addplayer/${gameId}`, playerData)
   return addToGame.data
@@ -46,7 +54,14 @@ const createGame = async (game) => {
     return response.data
 }
 
+const cancelGame = async (gameId, authorId) => {
+    const response = await instance.put(`/game/${gameId}/author/${authorId}`)
+    return response.data
+}
+
 module.exports = {
+    changePlayerName,
+    cancelGame,
     createGame,
     getGames,
     getGamesByPlayerId,
