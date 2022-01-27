@@ -63,7 +63,7 @@ const prepareGameActionsButtonsForPlayer = async (playerData, game) => {
             callback_data: `game-cancel-${game.id}`
         })
         bot.action(`game-cancel-${game.id}`, async ctx => {
-            const response = await cancelGame(game.id, ctx.from.id)
+            /*const response = await cancelGame(game.id, ctx.from.id)
             if(response.gameCanceled) {
                 if(response.playersList.length > 0) {
                     response.playersList.forEach(player => {
@@ -72,7 +72,7 @@ const prepareGameActionsButtonsForPlayer = async (playerData, game) => {
                     })
                 }
                 ctx.answerCbQuery()
-            }
+            }*/
             ctx.reply(`La partida ${game.title} ha sido cancelada. Se avisará a los usuarios que estuvieran apuntados. (WIP)`)
             ctx.answerCbQuery()
         })
