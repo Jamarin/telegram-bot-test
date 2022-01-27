@@ -66,6 +66,11 @@ const cancelGame = async (gameId, authorId) => {
     }
 }
 
+const playerExists = async(playerData) => {
+    const response = await instance.get(`/player/${playerData.id}`)
+    return response.data
+}
+
 module.exports = {
     changePlayerName,
     cancelGame,
@@ -77,4 +82,5 @@ module.exports = {
     removePlayerFromGame,
     initializePlayer,
     getPlayerInGame,
+    playerExists
 }

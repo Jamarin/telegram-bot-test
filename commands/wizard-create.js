@@ -1,5 +1,5 @@
 const {Markup, Scenes} = require('telegraf');
-const {createGame} = require("../api.services");
+const {createGame, addPlayerToGame} = require("../api.services");
 
 const createGameWizard = () => {
     const game = {
@@ -37,7 +37,7 @@ const createGameWizard = () => {
     }
 
     return new Scenes.WizardScene(
-        'super-wizard',
+        'create-game-wizard',
         async (ctx) => {
             await ctx.reply('¿Cuál es el nombre de la partida?')
             return ctx.wizard.next()
@@ -72,6 +72,7 @@ const createGameWizard = () => {
             game.authorId = ctx.from.id
             const createdGame = await createGame(game)
             await ctx.reply(`La partida ${createdGame.title} ha sido creada con éxito.`)
+            await addPlayerToGame(createdGame.id, ctx.from)
             return await ctx.scene.leave()
         }
     )

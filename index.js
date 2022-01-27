@@ -1,16 +1,18 @@
 const bot = require('./bot')
 const {Scenes, session} = require('telegraf')
 const commandStart = require('./commands/start')
-const commandInit = require('./commands/init')
 const commandGames = require('./commands/games')
 const commandMe = require('./commands/me')
 const commandHelp = require('./commands/help')
 const commandName = require('./commands/name')
 const createGameWizard = require('./commands/wizard-create')
+const initPlayerWizard = require('./commands/init')
+const {playerExists} = require("./api.services");
 
 // Prepare stage
-const stage = new Scenes.Stage([createGameWizard()], {
+const stage = new Scenes.Stage([createGameWizard(), initPlayerWizard()], {
     createGame: 'create-game-wizard',
+    initPlayer: 'init-player-wizard'
 })
 
 bot.use(session())
@@ -24,22 +26,47 @@ bot.command('help', ctx => {
     commandHelp(ctx)
 })
 
-bot.command('init', ctx => {
-    commandInit(ctx)
+bot.command('init', async ctx => {
+    if(await checkUserExists(ctx.from)) {
+        ctx.reply('Ya has iniciado tu cuenta antes.');
+    } else {
+        await ctx.scene.enter('init-player-wizard')
+    }
+
 })
 
-bot.command('name', ctx => {
-    commandName(ctx)
+bot.command('name', async ctx => {
+    if(!await checkUserExists(ctx.from)) {
+        ctx.reply('Antes de cambiar tu nombre debes iniciar tu cuenta con el comando /init');
+    } else {
+       await commandName(ctx)
+    }
 })
 
-bot.command('games', ctx => {
-    commandGames(ctx)
+bot.command('games', async ctx => {
+    if(!await checkUserExists(ctx.from)) {
+        ctx.reply('Antes de listar las partidas debes iniciar tu cuenta con el comando /init');
+    } else {
+        await commandGames(ctx)
+    }
 })
 
-bot.command('me', ctx => {
-    commandMe(ctx)
+bot.command('me', async ctx => {
+    if(!await checkUserExists(ctx.from)) {
+        ctx.reply('Antes de listar tus partidas debes iniciar tu cuenta con el comando /init');
+    } else {
+        await commandMe(ctx)
+    }
 })
 
-bot.command('create', ctx => {
-    ctx.scene.enter('super-wizard');
+bot.command('create', async ctx => {
+    if(!await checkUserExists(ctx.from)) {
+        ctx.reply('Antes de crear una partida debes iniciar tu cuenta con el comando /init');
+    } else {
+        await ctx.scene.enter('create-game-wizard');
+    }
 })
+
+const checkUserExists = async (playerData) => {
+    return await playerExists(playerData);
+}

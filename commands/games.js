@@ -8,11 +8,15 @@ let gameActionsButtons = []
 const command = async (ctx) => {
     gamesList = await getGames()
     await prepareGamesButtons()
-    await bot.telegram.sendMessage(ctx.from.id, "Elige la partida que quieras gestionar", {
-        reply_markup: {
-            inline_keyboard: prepareRenderGamesButtons()
-        }
-    })
+    if(gamesList.length === 0) {
+        await ctx.reply('No existen partidas disponibles. Puedes crear las tuyas propias con el comando /create');
+    } else {
+        await bot.telegram.sendMessage(ctx.from.id, "Elige la partida que quieras gestionar", {
+            reply_markup: {
+                inline_keyboard: prepareRenderGamesButtons()
+            }
+        })
+    }
 }
 
 const prepareGamesButtons = async () => {
@@ -31,7 +35,7 @@ const prepareGameActionsButtonsForPlayer = async (playerData, game) => {
     gameActionsButtons = []
     const isPlayerInGame = await getPlayerInGame(playerData.id, game.id)
     const players = await getPlayerListInGame(game.id)
-    if (!isPlayerInGame) {
+    if (!isPlayerInGame && game.authorId !== playerData.id) {
         if (players.length >= game.maxPlayers) {
             gameActionsButtons.push({
                 text: 'Partida llena',
@@ -43,38 +47,35 @@ const prepareGameActionsButtonsForPlayer = async (playerData, game) => {
             })
         }
         else {
-            if(playerData.id === game.authorId) {
-                gameActionsButtons.push({
-                  text: 'Cancelar',
-                  callback_data: `game-cancel-${game.id}`
-                })
-                bot.action(`game-cancel-${game.id}`, async ctx => {
-                    const response = await cancelGame(game.id, ctx.from.id)
-                    console.log(response)
-                    if(response.gameCanceled) {
-                        if(response.playersList.length > 0) {
-                            response.playersList.forEach(player => {
-                                console.log(`Send message to user with id ${player.id}`)
-                                bot.telegram.sendMessage(player.id, `La partida ${game.title} ha sido cancelada.`)
-                            })
-                        }
-                        ctx.answerCbQuery()
-                    }
-                    ctx.reply(`La partida ${game.title} ha sido cancelada. Se avisará a los usuarios que estuvieran apuntados. (WIP)`)
-                    ctx.answerCbQuery()
-                })
-            } else {
-                gameActionsButtons.push({
-                    text: 'Unirse',
-                    callback_data: `game-in-${game.id}`
-                })
-                bot.action(`game-in-${game.id}`, ctx => {
-                    addPlayerToGame(game.id, ctx.from)
-                    bot.telegram.sendMessage(ctx.chat.id, `Te has unido a la partida ${game.title}`)
-                    ctx.answerCbQuery()
-                })
-            }
+            gameActionsButtons.push({
+                text: 'Unirse',
+                callback_data: `game-in-${game.id}`
+            })
+            bot.action(`game-in-${game.id}`, ctx => {
+                addPlayerToGame(game.id, ctx.from)
+                bot.telegram.sendMessage(ctx.chat.id, `Te has unido a la partida ${game.title}`)
+                ctx.answerCbQuery()
+            })
         }
+    } else if(playerData.id === game.authorId) {
+        gameActionsButtons.push({
+            text: 'Cancelar',
+            callback_data: `game-cancel-${game.id}`
+        })
+        bot.action(`game-cancel-${game.id}`, async ctx => {
+            const response = await cancelGame(game.id, ctx.from.id)
+            if(response.gameCanceled) {
+                if(response.playersList.length > 0) {
+                    response.playersList.forEach(player => {
+                        console.log(`Send message to user with id ${player.id}`)
+                        bot.telegram.sendMessage(player.id, `La partida ${game.title} ha sido cancelada.`)
+                    })
+                }
+                ctx.answerCbQuery()
+            }
+            ctx.reply(`La partida ${game.title} ha sido cancelada. Se avisará a los usuarios que estuvieran apuntados. (WIP)`)
+            ctx.answerCbQuery()
+        })
     } else {
         gameActionsButtons.push({
             text: 'Salir',
@@ -105,7 +106,7 @@ const prepareGameActionsButtons = (game) => {
 ------------------------------
 ${game.description}
 Fecha: ${new Date(game.date).toLocaleString('es')}
-Huecos (sin contar creador): ${game.maxPlayers}
+Capacidad: ${game.players.length} / ${game.maxPlayers}
 Jugadores apuntados:
 ${playersText}`,
             {

@@ -1,10 +1,37 @@
+const {Scenes} = require('telegraf');
 const {initializePlayer} = require("../api.services");
-const bot = require('../bot')
 
-const command = (ctx) => {
-    const name = ctx.message.text.slice(6)
-    initializePlayer(ctx.from, name)
-    bot.telegram.sendMessage(ctx.chat.id, `Se ha establecido ${name} como el nombre que aparecerá cuando te inscribas en alguna partida.`)
+const initPlayerWizard = () => {
+    let playerName = ''
+
+    const validateName = (name) => {
+        return name.length > 2 && name.length < 255
+    }
+    const receiveName = (ctx, name) => {
+        if(validateName(name)) {
+            playerName = name
+            return true
+        } else {
+            ctx.reply('El nombre no puede contener menos de 2 letras ni más de 255.')
+            return false
+        }
+    }
+
+    return new Scenes.WizardScene(
+        'init-player-wizard',
+        async (ctx) => {
+            await ctx.reply('¿Cómo quieres que te llame?')
+            return ctx.wizard.next()
+        },
+        async (ctx) => {
+            if(receiveName(ctx, ctx.message.text)) {
+                console.log(ctx.from)
+                await initializePlayer(ctx.from, playerName)
+                await ctx.reply(`De acuerdo, te llamaré ${playerName}.`)
+                return ctx.scene.leave()
+            }
+        }
+    )
 }
 
-module.exports = command
+module.exports = initPlayerWizard
