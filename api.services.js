@@ -1,7 +1,7 @@
 const axios = require('axios')
 
 const instance = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: 'https://calm-retreat-50975.herokuapp.com/',
     timeout: 1000
 });
 
