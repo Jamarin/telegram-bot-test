@@ -8,7 +8,14 @@ const command = async (ctx) => {
     })
 
     bot.on('text', async ctx => {
-        await bot.telegram.sendMessage(process.env.CHAT_OWNER_ID, ctx.message.text)
+        let sentFrom = ctx.message.from.username;
+        if(sentFrom === null || sentFrom === undefined || sentFrom === '') {
+            sentFrom = ctx.message.from.first_name;
+        }
+        if(sentFrom === null || sentFrom === undefined || sentFrom === '') {
+            sentFrom = ctx.message.from.id;
+        }
+        await bot.telegram.sendMessage(process.env.CHAT_OWNER_ID, `Sugerencia desde VL Bot, enviada por ${ctx.from.username}: ${ctx.message.text}`)
         ctx.reply('¡Gracias por tu sugerencia!')
     })
 }
