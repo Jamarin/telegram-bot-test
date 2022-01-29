@@ -69,7 +69,7 @@ bot.command('create', async ctx => {
 
 /* SCHEDULED TASKS */
 const schedule = require('node-schedule')
-schedule.scheduleJob('0 10 * * *', () => {
+schedule.scheduleJob('0 */3 * * * *', () => {
     console.log('Running scheduled task to send daily message about games');
     bot.telegram.sendMessage(process.env.TELEGRAM_BOARD_GROUP_ID, 'Hola, esta es una prueba de envio de mensajes');
     bot.telegram.sendMessage(process.env.TELEGRAM_ROLE_GROUP_ID, 'Hola, esta es una prueba de envio de mensajes');
