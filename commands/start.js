@@ -1,7 +1,6 @@
 const bot = require('../bot')
 
 const command = (ctx) => {
-    console.log('start')
     bot.telegram.sendMessage(ctx.chat.id, `Bienvenido al bot de Valentia Lúdica para la gestión de partidas.
 - /init definir tu nombre
 - /name cambiar tu nombre

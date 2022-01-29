@@ -16,16 +16,16 @@ const initPlayerWizard = () => {
             return false
         }
     }
-
+    console.log('initPlayerWizard')
     return new Scenes.WizardScene(
         'init-player-wizard',
         async (ctx) => {
+            console.log('first step')
             await ctx.reply('¿Cómo quieres que te llame?')
             return ctx.wizard.next()
         },
         async (ctx) => {
             if(receiveName(ctx, ctx.message.text)) {
-                console.log(ctx.from)
                 await initializePlayer(ctx.from, playerName)
                 await ctx.reply(`De acuerdo, te llamaré ${playerName}.`)
                 return ctx.scene.leave()

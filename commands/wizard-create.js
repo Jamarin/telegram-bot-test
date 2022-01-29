@@ -51,7 +51,6 @@ const createGameWizard = () => {
             const month = date.split('/')[1]
             const year = date.split('/')[2]
             game.date = new Date(year, month - 1, day)
-            console.log(`La fecha interpretada es ${game.date}`)
             return true
         } else {
             ctx.reply('La fecha no es válida. Por favor, vuelve a introducirla. (fecha > hoy)')
@@ -68,7 +67,6 @@ const createGameWizard = () => {
             game.date.setHours(time.substring(0, 2))
             game.date.setMinutes(time.substring(3, 5))
             game.date.setSeconds(0);
-            console.log(`La fecha interpretada es ${game.date}`)
             return true
         } else {
             ctx.reply('La hora no es válida. Por favor, vuelve a introducirla. (HH:MM)')
