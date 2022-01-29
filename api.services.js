@@ -1,5 +1,5 @@
 const axios = require('axios')
-
+console.log('API Services Loaded with URL: ' + process.env.API_URL)
 const instance = axios.create({
     baseURL: process.env.API_URL,
     timeout: 1000
