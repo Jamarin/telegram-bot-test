@@ -3,7 +3,7 @@ console.log('API Services Loaded with URL: ' + process.env.API_URL)
 const instance = axios.create({
     baseURL: process.env.API_URL,
     //baseURL: 'https://vl-games-api.herokuapp.com',
-    timeout: 1000
+    timeout: 30000
 });
 
 const getGames = async (gamesFilter) => {
