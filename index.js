@@ -7,6 +7,7 @@ const commandHelp = require('./commands/help')
 const commandName = require('./commands/name')
 const createGameWizard = require('./commands/wizard-create')
 const initPlayerWizard = require('./commands/init')
+const commandSuggest = require('./commands/suggest')
 const {playerExists} = require("./api.services");
 
 // Prepare stage
@@ -65,6 +66,10 @@ bot.command('create', async ctx => {
     } else {
         await ctx.scene.enter('create-game-wizard');
     }
+})
+
+bot.command('suggest', async ctx => {
+    await commandSuggest(ctx)
 })
 
 /* SCHEDULED TASKS */
