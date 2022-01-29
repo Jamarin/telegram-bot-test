@@ -8,6 +8,7 @@ const command = (ctx) => {
 - /games - ver todas las partidas
 - /create - crear partida
 - /help - ver ayuda
+- /suggest - enviar sugerencias
 
 Si necesitas más ayuda, contacta con junta@valentialudica.com`)
 }
