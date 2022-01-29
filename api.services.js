@@ -1,12 +1,13 @@
 const axios = require('axios')
 
 const instance = axios.create({
-    baseURL: 'https://calm-retreat-50975.herokuapp.com/',
+    baseURL: 'http://localhost:3000',
     timeout: 1000
 });
 
-const getGames = async () => {
-    let games = await instance.get('/game/list')
+const getGames = async (gamesFilter) => {
+    if(gamesFilter.type === '') gamesFilter.type = 'all'
+    let games = await instance.get(`/game/list/${gamesFilter.type}/${gamesFilter.maxTime}`)
     return games.data
 }
 

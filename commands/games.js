@@ -1,12 +1,47 @@
 const {getGames, getPlayerListInGame, getPlayerInGame, removePlayerFromGame, addPlayerToGame, cancelGame} = require("../api.services");
 const bot = require('../bot')
+const {isNumber} = require("util");
 
 let gamesList = []
 let gamesListButtons = []
 let gameActionsButtons = []
 
+const validateMaxTime = (time) => {
+    if(isNumber(time)){
+        if(time > 0 && time < 365){
+            return true
+        }
+    }
+}
+
 const command = async (ctx) => {
-    gamesList = await getGames()
+    let gamesFilter = {
+        'type': '',
+        'maxTime': 14,
+    }
+    if(ctx.message.text.length > 6) {
+        // Check for parameters
+        let params = ctx.message.text.split(" ")
+        if(params[1].toLowerCase() === 'rol') {
+            gamesFilter.type = 'role'
+        } else if(params[1].toLowerCase() === 'mesa') {
+            gamesFilter.type = 'board'
+        }
+
+        if(gamesFilter.type !== '' && params.length > 2) {
+            gamesFilter.maxTime = parseInt(params[2])
+            if(!validateMaxTime(gamesFilter.maxTime)){
+                gamesFilter.maxTime = 14
+            }
+        }
+        if(gamesFilter.type === '' && params.length === 2) {
+            gamesFilter.maxTime = parseInt(params[1])
+            if(!validateMaxTime(gamesFilter.maxTime)){
+                gamesFilter.maxTime = 14
+            }
+        }
+    }
+    gamesList = await getGames(gamesFilter)
     await prepareGamesButtons()
     if(gamesList.length === 0) {
         await ctx.reply('No existen partidas disponibles. Puedes crear las tuyas propias con el comando /create');
@@ -63,17 +98,16 @@ const prepareGameActionsButtonsForPlayer = async (playerData, game) => {
             callback_data: `game-cancel-${game.id}`
         })
         bot.action(`game-cancel-${game.id}`, async ctx => {
-            /*const response = await cancelGame(game.id, ctx.from.id)
+            const response = await cancelGame(game.id, ctx.from.id)
             if(response.gameCanceled) {
                 if(response.playersList.length > 0) {
                     response.playersList.forEach(player => {
-                        console.log(`Send message to user with id ${player.id}`)
                         bot.telegram.sendMessage(player.id, `La partida ${game.title} ha sido cancelada.`)
                     })
                 }
                 ctx.answerCbQuery()
-            }*/
-            ctx.reply(`La partida ${game.title} ha sido cancelada. Se avisará a los usuarios que estuvieran apuntados. (WIP)`)
+            }
+            ctx.reply(`La partida ${game.title} ha sido cancelada. Se avisará a los usuarios que estuvieran apuntados.`)
             ctx.answerCbQuery()
         })
     } else {
