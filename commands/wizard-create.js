@@ -42,7 +42,9 @@ const createGameWizard = () => {
         const day = date.split('/')[0]
         const month = date.split('/')[1]
         const year = date.split('/')[2]
+        console.log('Let\'s build a date')
         const proposedDate = new Date(year, month - 1, day)
+        console.log(`Proposed date: ${proposedDate} divided: ${day}, ${month}, ${year}`)
         return proposedDate > new Date()
     }
     const receiveGameDate = (ctx, date) => {
