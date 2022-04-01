@@ -1,4 +1,4 @@
-const bot = require('../bot')
+const {bot} = require('../bot')
 const { changePlayerName } = require('../api.services')
 
 const command = async (ctx) => {

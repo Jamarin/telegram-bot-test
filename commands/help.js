@@ -1,7 +1,5 @@
-const bot = require('../bot')
-
 const command = (ctx) => {
-    bot.telegram.sendMessage(ctx.chat.id, `Esta es la ayuda del bot de Valentia Lúdica:
+    ctx.reply(`Esta es la ayuda del bot de Valentia Lúdica:
 - /init definir tu nombre
 - /name cambiar tu nombre
 - /me - ver las partidas en las que participas

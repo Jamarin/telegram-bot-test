@@ -1,4 +1,4 @@
-const bot = require('../bot')
+const {bot} = require('../bot')
 const { getGamesByPlayerId, getGames, getPlayerInGame, addPlayerToGame, removePlayerFromGame, getPlayerListInGame} = require('../api.services')
 
 let gamesList = []

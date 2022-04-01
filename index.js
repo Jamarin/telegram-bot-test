@@ -1,4 +1,4 @@
-const bot = require('./bot')
+const {bot, commands} = require('./bot')
 const {Scenes, session} = require('telegraf')
 const commandStart = require('./commands/start')
 const commandGames = require('./commands/games')
@@ -9,6 +9,12 @@ const createGameWizard = require('./commands/wizard-create')
 const initPlayerWizard = require('./commands/init')
 const commandSuggest = require('./commands/suggest')
 const {playerExists} = require("./api.services");
+
+const checkCommandIsActive = (command) => {
+    const res = commands.filter(c => c.name === command).map(c => c.active = true)
+    console.log(res)
+    return res;
+}
 
 // Prepare stage
 const stage = new Scenes.Stage([createGameWizard(), initPlayerWizard()], {

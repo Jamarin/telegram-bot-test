@@ -1,4 +1,4 @@
-const bot = require('../bot');
+const {bot} = require('../bot');
 
 const command = async (ctx) => {
     await bot.telegram.sendMessage(ctx.chat.id, '¿Qué sugerencia tienes?', {

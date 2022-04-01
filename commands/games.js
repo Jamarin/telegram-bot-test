@@ -1,5 +1,5 @@
 const {getGames, getPlayerListInGame, getPlayerInGame, removePlayerFromGame, addPlayerToGame, cancelGame} = require("../api.services");
-const bot = require('../bot')
+const {bot} = require('../bot')
 const {isNumber} = require("util");
 
 let gamesList = []

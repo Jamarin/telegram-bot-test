@@ -1,7 +1,5 @@
 const {Markup, Scenes} = require('telegraf');
 const {createGame, addPlayerToGame} = require("../api.services");
-const Calendar = require('telegraf-calendar-telegram');
-const bot = require('../bot')
 
 const createGameWizard = () => {
     const game = {
