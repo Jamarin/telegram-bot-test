@@ -8,6 +8,7 @@ const commandName = require('./commands/name')
 const createGameWizard = require('./commands/wizard-create')
 const initPlayerWizard = require('./commands/init')
 const commandSuggest = require('./commands/suggest')
+const commandAmqp = require('./commands/test-amqp')
 const {playerExists} = require("./api.services");
 
 const checkCommandIsActive = (command) => {
@@ -24,6 +25,10 @@ const stage = new Scenes.Stage([createGameWizard(), initPlayerWizard()], {
 
 bot.use(session())
 bot.use(stage.middleware())
+
+bot.command('amqp', ctx => {
+    commandAmqp(ctx)
+})
 
 bot.command('start', ctx => {
     commandStart(ctx)
