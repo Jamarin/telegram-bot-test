@@ -8,8 +8,9 @@ const commandName = require('./commands/name')
 const createGameWizard = require('./commands/wizard-create')
 const initPlayerWizard = require('./commands/init')
 const commandSuggest = require('./commands/suggest')
-const commandAmqp = require('./commands/test-amqp')
+const commandPubNub = require('./commands/test-pubnub')
 const {playerExists} = require("./api.services");
+const {initializeWorker} = require('./worker');
 
 const checkCommandIsActive = (command) => {
     const res = commands.filter(c => c.name === command).map(c => c.active = true)
@@ -26,8 +27,10 @@ const stage = new Scenes.Stage([createGameWizard(), initPlayerWizard()], {
 bot.use(session())
 bot.use(stage.middleware())
 
-bot.command('amqp', ctx => {
-    commandAmqp(ctx)
+initializeWorker(bot)
+
+bot.command('pubnub', ctx => {
+    commandPubNub(ctx)
 })
 
 bot.command('start', ctx => {
